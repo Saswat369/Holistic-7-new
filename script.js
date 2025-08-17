@@ -1,4 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Intersection Observer for Scroll Animations ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1 // Trigger when 10% of the element is visible
+    });
+
+    const hiddenElements = document.querySelectorAll('.hidden');
+    hiddenElements.forEach((el) => observer.observe(el));
+
+
+    // --- Video Modal Logic ---
     const videoCards = document.querySelectorAll('.video-card');
     const modal = document.getElementById('video-modal');
     const closeButton = document.querySelector('.close-button');
@@ -17,8 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 iframeHtml = `<iframe src="https://www.instagram.com/reel/${videoId}/embed" frameborder="0" allowfullscreen></iframe>`;
             }
 
-            videoPlayer.innerHTML = iframeHtml;
-            modal.style.display = 'block';
+            if (iframeHtml) {
+                videoPlayer.innerHTML = iframeHtml;
+                modal.style.display = 'block';
+            }
         });
     });
 
@@ -31,6 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('click', (event) => {
         if (event.target == modal) {
+            closeModal();
+        }
+    });
+
+    // Optional: Close modal with Escape key
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
             closeModal();
         }
     });
